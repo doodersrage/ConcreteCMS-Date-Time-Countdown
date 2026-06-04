@@ -24,9 +24,7 @@
 <script>
 
     $(function(){
-        counter.vars.date = new Date('<?php echo $dateValue; ?>');
-        counter.vars.counterID = '.counter-<?php echo $bID?>',
-        counter.initCounter();
+        const counter = new Counter(new Date('<?php echo $dateValue; ?>'), '.counter-<?php echo $bID?>');
     });
     
 </script>
