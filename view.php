@@ -23,13 +23,9 @@
 
 <script>
 
-    const counterID = '.counter-<?php echo $bID?>',
-        oneDay = 24 * 60 * 60 * 1000,
-        sel_date_time = '<?php echo $dateValue; ?>',
-        currentDate = new Date(),
-        date = new Date(sel_date_time);
-
     $(function(){
+        counter.vars.date = new Date('<?php echo $dateValue; ?>');
+        counter.vars.counterID = '.counter-<?php echo $bID?>',
         counter.initCounter();
     });
     
