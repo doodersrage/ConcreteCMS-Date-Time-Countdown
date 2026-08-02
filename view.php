@@ -2,7 +2,7 @@
 
 <div
     class="ccm-block-date-counter counter-wrap counter-<?php echo (int) $bID; ?>"
-    data-expired-message="<?php echo h(t('Event has passed. Please come back for future updates.')); ?>"
+    data-expired-message="<?php echo h($expiredMessage); ?>"
     data-invalid-message="<?php echo h(t('Invalid target date.')); ?>"
     <?php if ($targetDate) { ?>
         data-target-date="<?php echo h($targetDate); ?>"

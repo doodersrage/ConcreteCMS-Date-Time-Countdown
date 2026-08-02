@@ -11,5 +11,6 @@
     <field name="dateValue" type="datetime">
       <notnull/>
     </field>
+    <field name="expiredMessage" type="text"/>
   </table>
 </schema>

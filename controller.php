@@ -9,7 +9,7 @@ use Exception;
 class Controller extends BlockController
 {
     protected $btInterfaceWidth = 470;
-    protected $btInterfaceHeight = 300;
+    protected $btInterfaceHeight = 380;
     protected $btCacheBlockOutput = true;
     protected $btCacheBlockOutputOnPost = true;
     protected $btCacheBlockOutputForRegisteredUsers = false;
@@ -17,6 +17,7 @@ class Controller extends BlockController
     protected $btDefaultSet = 'basic';
 
     protected $dateValue = '';
+    protected $expiredMessage = '';
 
     public function getBlockTypeDescription()
     {
@@ -31,11 +32,13 @@ class Controller extends BlockController
     public function add()
     {
         $this->set('dateValue', date('Y-m-d H:i:s'));
+        $this->set('expiredMessage', '');
     }
 
     public function edit()
     {
         $this->set('dateValue', $this->dateValue);
+        $this->set('expiredMessage', $this->expiredMessage);
     }
 
     public function validate($args)
@@ -55,6 +58,7 @@ class Controller extends BlockController
     {
         $wdt = $this->app->make('helper/form/date_time');
         $args['dateValue'] = $wdt->translate('dateValue', $args) ?: '';
+        $args['expiredMessage'] = trim(strip_tags((string) ($args['expiredMessage'] ?? '')));
 
         parent::save($args);
     }
@@ -62,6 +66,7 @@ class Controller extends BlockController
     public function view()
     {
         $this->set('targetDate', $this->getTargetDateIso());
+        $this->set('expiredMessage', $this->getExpiredMessage());
     }
 
     public function registerViewAssets($outputContent = '')
@@ -71,7 +76,18 @@ class Controller extends BlockController
 
     public function getSearchableContent()
     {
-        return $this->dateValue;
+        return trim($this->dateValue . ' ' . $this->expiredMessage);
+    }
+
+    protected function getExpiredMessage(): string
+    {
+        $message = trim((string) $this->expiredMessage);
+
+        if ($message !== '') {
+            return $message;
+        }
+
+        return (string) t('Event has passed. Please come back for future updates.');
     }
 
     protected function getTargetDateIso(): ?string
