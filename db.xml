@@ -9,7 +9,6 @@
       <key/>
     </field>
     <field name="dateValue" type="datetime">
-      <default value="0000-00-00 00:00:00"/>
       <notnull/>
     </field>
   </table>

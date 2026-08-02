@@ -1,3 +1,16 @@
-Simple Date / Time coundown block for use with ConcreteCMS V9. Simply copy files to the application\blocks\date_counter directory then install the block within site admin for use. 
+Simple Date / Time countdown block for Concrete CMS v9.
 
-Once installed just use like any other block. Select Date Counter block from block list then assign and date and time to your counter.
+## Installation
+
+1. Copy the block files to `application/blocks/date_counter/`.
+2. In the Dashboard, go to **System & Settings > Blocks > Install Block** and install **Date Counter**.
+3. Add the block to a page, then set the target date and time.
+
+## Files
+
+- `controller.php` — block controller (save, validate, caching)
+- `view.php` — frontend markup
+- `view.js` / `view.css` — countdown behavior and styling (auto-loaded by Concrete)
+- `form.php` — shared add/edit form
+- `add.php` / `edit.php` — add and edit views
+- `db.xml` — database schema

@@ -1,3 +1,23 @@
-.counter-wrap{
+.ccm-block-date-counter.counter-wrap {
     text-align: center;
+}
+
+.ccm-block-date-counter .days-cnt,
+.ccm-block-date-counter .hours-cnt,
+.ccm-block-date-counter .minutes-cnt,
+.ccm-block-date-counter .seconds-cnt {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ccm-block-date-counter label {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+}
+
+.ccm-block-date-counter .counter-message {
+    margin: 0;
 }
