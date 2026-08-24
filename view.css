@@ -1,23 +1,35 @@
-.ccm-block-date-counter.counter-wrap {
+.ccm-block-date-counter {
     text-align: center;
 }
 
-.ccm-block-date-counter .days-cnt,
-.ccm-block-date-counter .hours-cnt,
-.ccm-block-date-counter .minutes-cnt,
-.ccm-block-date-counter .seconds-cnt {
+.ccm-block-date-counter__units {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.ccm-block-date-counter__unit {
+    flex: 1 1 5.5rem;
+    max-width: 8rem;
+    min-width: 4.5rem;
+}
+
+.ccm-block-date-counter__value {
+    display: block;
     font-size: 2rem;
     font-weight: 700;
     line-height: 1.2;
 }
 
-.ccm-block-date-counter label {
+.ccm-block-date-counter__label {
     display: block;
     margin-top: 0.25rem;
     font-size: 0.875rem;
     letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
-.ccm-block-date-counter .counter-message {
+.ccm-block-date-counter__message {
     margin: 0;
 }

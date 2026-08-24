@@ -3,47 +3,106 @@
 namespace Application\Block\DateCounter;
 
 use Concrete\Core\Block\BlockController;
-use DateTime;
+use Concrete\Core\Error\ErrorList\ErrorList;
+use Concrete\Core\Form\Service\Widget\DateTime as DateTimeWidget;
+use Concrete\Core\Localization\Service\Date;
 use Exception;
 
 class Controller extends BlockController
 {
-    protected $btInterfaceWidth = 470;
-    protected $btInterfaceHeight = 380;
-    protected $btCacheBlockOutput = true;
-    protected $btCacheBlockOutputOnPost = true;
-    protected $btCacheBlockOutputForRegisteredUsers = false;
+    /**
+     * @var string
+     */
     protected $btTable = 'btDateCounter';
+
+    /**
+     * @var string
+     */
     protected $btDefaultSet = 'basic';
 
-    protected $dateValue = '';
-    protected $expiredMessage = '';
+    /**
+     * @var int
+     */
+    protected $btInterfaceWidth = 550;
 
-    public function getBlockTypeDescription()
-    {
-        return t('Display a countdown to a selected date and time.');
-    }
+    /**
+     * @var int
+     */
+    protected $btInterfaceHeight = 420;
 
-    public function getBlockTypeName()
+    /**
+     * @var bool
+     */
+    protected $btCacheBlockRecord = true;
+
+    /**
+     * @var bool
+     */
+    protected $btCacheBlockOutput = true;
+
+    /**
+     * @var bool
+     */
+    protected $btCacheBlockOutputOnPost = true;
+
+    /**
+     * @var bool
+     */
+    protected $btCacheBlockOutputForRegisteredUsers = false;
+
+    /**
+     * Target datetime stored in system timezone (Y-m-d H:i:s).
+     *
+     * @var string|null
+     */
+    public $dateValue;
+
+    /**
+     * Custom message shown when the countdown ends.
+     *
+     * @var string|null
+     */
+    public $expiredMessage;
+
+    public function getBlockTypeName(): string
     {
         return t('Date Counter');
     }
 
-    public function add()
+    public function getBlockTypeDescription(): string
     {
-        $this->set('dateValue', date('Y-m-d H:i:s'));
+        return t('Display a live countdown to a selected date and time.');
+    }
+
+    public function add(): void
+    {
+        /** @var Date $dateHelper */
+        $dateHelper = $this->app->make('date');
+        $this->set('dateValue', $dateHelper->toDB('now'));
         $this->set('expiredMessage', '');
     }
 
-    public function edit()
+    public function edit(): void
     {
         $this->set('dateValue', $this->dateValue);
-        $this->set('expiredMessage', $this->expiredMessage);
+        $this->set('expiredMessage', (string) $this->expiredMessage);
     }
 
-    public function validate($args)
+    /**
+     * @param array<string, mixed>|string|null $args
+     */
+    public function validate($args): ErrorList
     {
-        $e = $this->app->make('helper/validation/error');
+        /** @var ErrorList $e */
+        $e = $this->app->make(ErrorList::class);
+
+        if (!is_array($args)) {
+            $e->add(t('Invalid request.'));
+
+            return $e;
+        }
+
+        /** @var DateTimeWidget $wdt */
         $wdt = $this->app->make('helper/form/date_time');
         $dateValue = $wdt->translate('dateValue', $args);
 
@@ -54,40 +113,44 @@ class Controller extends BlockController
         return $e;
     }
 
-    public function save($args)
+    /**
+     * @param array<string, mixed> $args
+     */
+    public function save($args): void
     {
+        /** @var DateTimeWidget $wdt */
         $wdt = $this->app->make('helper/form/date_time');
-        $args['dateValue'] = $wdt->translate('dateValue', $args) ?: '';
+
+        $args['dateValue'] = $wdt->translate('dateValue', $args) ?: null;
         $args['expiredMessage'] = trim(strip_tags((string) ($args['expiredMessage'] ?? '')));
 
         parent::save($args);
     }
 
-    public function view()
+    public function view(): void
     {
+        $this->set('bID', (int) $this->bID);
         $this->set('targetDate', $this->getTargetDateIso());
         $this->set('expiredMessage', $this->getExpiredMessage());
+        $this->set('invalidMessage', t('Invalid target date.'));
+        $this->set('missingDateMessage', t('No target date has been configured.'));
     }
 
-    public function registerViewAssets($outputContent = '')
+    public function getSearchableContent(): string
     {
-        $this->requireAsset('javascript', 'jquery');
-    }
-
-    public function getSearchableContent()
-    {
-        return trim($this->dateValue . ' ' . $this->expiredMessage);
+        return trim(implode(' ', array_filter([
+            (string) $this->dateValue,
+            (string) $this->expiredMessage,
+        ])));
     }
 
     protected function getExpiredMessage(): string
     {
         $message = trim((string) $this->expiredMessage);
 
-        if ($message !== '') {
-            return $message;
-        }
-
-        return (string) t('Event has passed. Please come back for future updates.');
+        return $message !== ''
+            ? $message
+            : (string) t('Event has passed. Please come back for future updates.');
     }
 
     protected function getTargetDateIso(): ?string
@@ -97,7 +160,11 @@ class Controller extends BlockController
         }
 
         try {
-            return (new DateTime($this->dateValue))->format('c');
+            /** @var Date $dateHelper */
+            $dateHelper = $this->app->make('date');
+            $date = $dateHelper->toDateTime((string) $this->dateValue, 'system', 'system');
+
+            return $date ? $date->format('c') : null;
         } catch (Exception $e) {
             return null;
         }

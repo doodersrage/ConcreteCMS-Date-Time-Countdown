@@ -1,33 +1,43 @@
-<?php defined('C5_EXECUTE') or die('Access Denied.'); ?>
+<?php
+
+defined('C5_EXECUTE') or die('Access Denied.');
+
+/** @var int $bID */
+/** @var string|null $targetDate */
+/** @var string $expiredMessage */
+/** @var string $invalidMessage */
+/** @var string $missingDateMessage */
+?>
 
 <div
-    class="ccm-block-date-counter counter-wrap counter-<?php echo (int) $bID; ?>"
+    id="ccm-block-date-counter-<?php echo (int) $bID; ?>"
+    class="ccm-block-date-counter"
     data-expired-message="<?php echo h($expiredMessage); ?>"
-    data-invalid-message="<?php echo h(t('Invalid target date.')); ?>"
+    data-invalid-message="<?php echo h($invalidMessage); ?>"
     <?php if ($targetDate) { ?>
         data-target-date="<?php echo h($targetDate); ?>"
     <?php } ?>
     aria-live="polite"
 >
     <?php if (!$targetDate) { ?>
-        <p class="counter-message"><?php echo t('No target date has been configured.'); ?></p>
+        <p class="ccm-block-date-counter__message"><?php echo h($missingDateMessage); ?></p>
     <?php } else { ?>
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="days-cnt" aria-label="<?php echo t('Days'); ?>"></div>
-                <label><?php echo t('DAYS'); ?></label>
+        <div class="ccm-block-date-counter__units" role="timer">
+            <div class="ccm-block-date-counter__unit">
+                <span class="ccm-block-date-counter__value days-cnt" aria-label="<?php echo t('Days'); ?>">0</span>
+                <span class="ccm-block-date-counter__label"><?php echo t('Days'); ?></span>
             </div>
-            <div class="col-sm-3">
-                <div class="hours-cnt" aria-label="<?php echo t('Hours'); ?>"></div>
-                <label><?php echo t('HOURS'); ?></label>
+            <div class="ccm-block-date-counter__unit">
+                <span class="ccm-block-date-counter__value hours-cnt" aria-label="<?php echo t('Hours'); ?>">00</span>
+                <span class="ccm-block-date-counter__label"><?php echo t('Hours'); ?></span>
             </div>
-            <div class="col-sm-3">
-                <div class="minutes-cnt" aria-label="<?php echo t('Minutes'); ?>"></div>
-                <label><?php echo t('MINUTES'); ?></label>
+            <div class="ccm-block-date-counter__unit">
+                <span class="ccm-block-date-counter__value minutes-cnt" aria-label="<?php echo t('Minutes'); ?>">00</span>
+                <span class="ccm-block-date-counter__label"><?php echo t('Minutes'); ?></span>
             </div>
-            <div class="col-sm-3">
-                <div class="seconds-cnt" aria-label="<?php echo t('Seconds'); ?>"></div>
-                <label><?php echo t('SECONDS'); ?></label>
+            <div class="ccm-block-date-counter__unit">
+                <span class="ccm-block-date-counter__value seconds-cnt" aria-label="<?php echo t('Seconds'); ?>">00</span>
+                <span class="ccm-block-date-counter__label"><?php echo t('Seconds'); ?></span>
             </div>
         </div>
     <?php } ?>
